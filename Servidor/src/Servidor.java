@@ -9,7 +9,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class Servidor {
+public class Servidor implements Runnable {
 
 	static ObjectOutputStream saida;
 	static OutputStream os;
@@ -18,55 +18,72 @@ public class Servidor {
 	static String url;
 	static String door;
 	static PrintStream mensagem;
-
+	static Socket servidor;
+	static ServerSocket sservidor;
+	
+	Servidor(Socket servidor) {
+	      this.servidor = servidor;
+	}
+	
 	public static void main(String[] args) throws IOException, ClassNotFoundException {
 
-		ServerSocket servidor = new ServerSocket(porta);
-		System.out.println("Servidor está rodando na porta -" + porta);
-
-		Socket cliente = servidor.accept();
-		System.out.println("Nova conexão com o cliente " + cliente.getInetAddress().getHostAddress());
-		saida = new ObjectOutputStream(cliente.getOutputStream());
-		os = cliente.getOutputStream();
-		mensagem = new PrintStream(os);
-
-		Scanner s = new Scanner(cliente.getInputStream());
-
-
-		while (s.hasNextLine()) {
-			String requisicao = s.nextLine();
-			System.out.println(requisicao);
-			String[] parts = requisicao.split(" ");
-			if (parts.length == 3) {
-				navegador = parts[0];
-				url = parts[1];
-				door = parts[2];
-			} else if (parts.length == 2) {
-				navegador = parts[0];
-				url = parts[1];
-				door = "8080";
-			} else {
-				System.out.println("O  ESPACO EM BRANCO");
-			}
-			GET();
-
-		}
-		s.close();
-		servidor.close();
-		cliente.close();
+		sservidor = new ServerSocket(porta);
+		System.out.println("Servidor está rodando na porta - " + porta + "\n");
+		
+		 while (true) {
+	         Socket servidor = sservidor.accept();
+	         new Thread(new Servidor(servidor)).start();
+	      }
+		 
 	}
+	
+	public void run() {
+		System.out.println("Nova conexão com o servidor " + servidor.getInetAddress().getHostAddress() + "\n");
 
+		try {
+			saida = new ObjectOutputStream(servidor.getOutputStream());
+			os = servidor.getOutputStream();
+			mensagem = new PrintStream(os);
+			Scanner s = new Scanner(servidor.getInputStream());
+
+			while (s.hasNextLine()) {
+				String requisicao = s.nextLine();
+				System.out.println(requisicao);
+				String[] parts = requisicao.split(" ");
+				if (parts.length == 3) {
+					navegador = parts[0];
+					url = parts[1];
+					door = parts[2];
+				} else if (parts.length == 2) {
+					navegador = parts[0];
+					url = parts[1];
+					door = "8080";
+				} else {
+					System.out.println("O  ESPACO EM BRANCO");
+				}
+				GET();
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
 	static public void GET() throws IOException, ClassNotFoundException {
 
 		String nomeArquivo = "/home/lucas/workspace/Servidor/src/" + url;
 
 		File file = new File(nomeArquivo);
-		
+
 		if (file.exists()) {
 			String msg = "OK";
 			saida.writeObject(msg);
 			saida.flush();
-			
+
 			FileInputStream fis = new FileInputStream(file);
 			BufferedInputStream bis = new BufferedInputStream(fis);
 
@@ -96,13 +113,13 @@ public class Servidor {
 				// System.out.println("Enviando arquivo ... " + (i * 100) /
 				// file.length() + "% completo!");
 				// i += 10;
-				
+
 			}
 			fis.close();
 			bis.close();
-		
+
 		} else {
-			System.out.println("Error 404 - Page not found!");
+			System.out.println("Error 404 - Page not found!\n");
 			String msg = "NOT OK";
 			saida.writeObject(msg);
 
