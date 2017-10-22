@@ -91,16 +91,18 @@ public class Servidor implements Runnable {
 			saida.flush();
 
 			// long i = 0;
+			
+			
 			long tam = file.length();
 			int valor = 0;
 			byte[] contents;
-
+			int i = 0;
 			while (tam > 0) {
 
-				if (tam >= 100) {
-					tam = tam - 100;
-					valor = 100;
-				} else if (tam < 100) {
+				if (tam >= 1024) {
+					tam = tam - 1024;
+					valor = 1024;
+				} else if (tam < 1024) {
 					valor = (int) tam;
 					tam = 0;
 				}
@@ -110,9 +112,9 @@ public class Servidor implements Runnable {
 				os.write(contents);
 				os.flush();
 
-				// System.out.println("Enviando arquivo ... " + (i * 100) /
-				// file.length() + "% completo!");
-				// i += 10;
+				System.out.println("Enviando arquivo ... " + (i * 100) /
+				file.length() + "% completo!");
+				i += 1024;
 
 			}
 			fis.close();
