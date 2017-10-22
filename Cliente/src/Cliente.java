@@ -31,7 +31,7 @@ public class Cliente {
 			door = parts[2];
 		} else if (parts.length == 2) {
 			url = parts[1];
-			door = "8080";
+			door = "8082";
 		} else {
 			System.out.println("Digitou errado, tchau!");
 			System.exit(0);
@@ -52,7 +52,25 @@ public class Cliente {
 		while (teclado.hasNextLine()) {
 			
 			//System.out.println("Para acessar as páginas, digite 'navegador http://urldesejada Porta'");
-			saida.println(teclado.nextLine());
+
+
+			comando = teclado.nextLine();
+			parts = comando.split(" ");
+			door = null;
+
+			if (parts.length == 3) {
+				url = parts[1];
+				door = parts[2];
+			} else if (parts.length == 2) {
+				url = parts[1];
+				door = "8082";
+			} else {
+				System.out.println("Digitou errado, tchau!");
+				System.exit(0);
+			}
+
+			saida.println(comando);
+
 			saida.flush();
 			GET();
 
@@ -65,6 +83,7 @@ public class Cliente {
 	static public void GET() throws IOException, ClassNotFoundException {
 
 		String nomeArquivo = url;
+		System.out.println(nomeArquivo);
 		String msg = (String) entrada.readObject();
 
 		if (msg.equals("OK")) {
@@ -72,19 +91,19 @@ public class Cliente {
 			FileOutputStream fos = new FileOutputStream(nomeArquivo);
 			BufferedOutputStream bos = new BufferedOutputStream(fos);
 			
-			byte[] contents = new byte[100];
+			byte[] contents = new byte[1];
 			int bytesRead = 0;
 			long tam = (long) entrada.readLong();
 			int valor = 0;
 
 			System.out.println("tamanho: " + tam);
-
+	
 			while (tam > 0) {
 
-				if (tam >= 100) {
-					tam = tam - 100;
-					valor = 100;
-				} else if (tam < 100) {
+				if (tam >= 1) {
+					tam = tam - 1;
+					valor = 1;
+				} else if (tam < 1) {
 					valor = (int) tam;
 					tam = 0;
 				}

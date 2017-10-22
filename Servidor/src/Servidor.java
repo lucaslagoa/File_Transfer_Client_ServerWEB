@@ -76,6 +76,7 @@ public class Servidor implements Runnable {
 	static public void GET() throws IOException, ClassNotFoundException {
 
 		String nomeArquivo = "/home/lucas/workspace/Servidor/src/" + url;
+		
 
 		File file = new File(nomeArquivo);
 
@@ -99,10 +100,10 @@ public class Servidor implements Runnable {
 			int i = 0;
 			while (tam > 0) {
 
-				if (tam >= 1024) {
-					tam = tam - 1024;
-					valor = 1024;
-				} else if (tam < 1024) {
+				if (tam >= 1) {
+					tam = tam - 1;
+					valor = 1;
+				} else if (tam < 1) {
 					valor = (int) tam;
 					tam = 0;
 				}
@@ -112,9 +113,9 @@ public class Servidor implements Runnable {
 				os.write(contents);
 				os.flush();
 
-				System.out.println("Enviando arquivo ... " + (i * 100) /
-				file.length() + "% completo!");
-				i += 1024;
+				//System.out.println("Enviando arquivo ... " + (i * 100) /
+				//file.length() + "% completo!");
+				//i += 1;
 
 			}
 			fis.close();
