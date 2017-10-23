@@ -13,7 +13,7 @@ public class Servidor implements Runnable {
 
 	static ObjectOutputStream saida;
 	static OutputStream os;
-	static int porta = 8082;
+	static int porta = 8080;
 	static String navegador;
 	static String url;
 	static String door;
@@ -59,7 +59,7 @@ public class Servidor implements Runnable {
 					url = parts[1];
 					door = "8080";
 				} else {
-					System.out.println("O  ESPACO EM BRANCO");
+					System.out.println("O ESPACO EM BRANCO");
 				}
 				GET();
 			}

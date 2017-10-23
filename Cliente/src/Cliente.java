@@ -13,6 +13,7 @@ public class Cliente {
 	static InputStream is;
 	static String url;
 	static Scanner teclado;
+	static String navegador;
 
 	public static void main(String[] args) throws UnknownHostException, IOException, ClassNotFoundException {
 
@@ -27,11 +28,13 @@ public class Cliente {
 		String door = null;
 
 		if (parts.length == 3) {
+			navegador = parts[0];
 			url = parts[1];
 			door = parts[2];
 		} else if (parts.length == 2) {
+			navegador = parts[0];
 			url = parts[1];
-			door = "8082";
+			door = "8080";
 		} else {
 			System.out.println("Digitou errado, tchau!");
 			System.exit(0);
@@ -50,20 +53,19 @@ public class Cliente {
 		GET();
 
 		while (teclado.hasNextLine()) {
-			
-			//System.out.println("Para acessar as páginas, digite 'navegador http://urldesejada Porta'");
-
 
 			comando = teclado.nextLine();
 			parts = comando.split(" ");
 			door = null;
 
 			if (parts.length == 3) {
+				navegador = parts[0];
 				url = parts[1];
 				door = parts[2];
 			} else if (parts.length == 2) {
+				navegador = parts[0];
 				url = parts[1];
-				door = "8082";
+				door = "8080";
 			} else {
 				System.out.println("Digitou errado, tchau!");
 				System.exit(0);
@@ -83,21 +85,20 @@ public class Cliente {
 	static public void GET() throws IOException, ClassNotFoundException {
 
 		String nomeArquivo = url;
-		System.out.println(nomeArquivo);
 		String msg = (String) entrada.readObject();
 
 		if (msg.equals("OK")) {
 
 			FileOutputStream fos = new FileOutputStream(nomeArquivo);
 			BufferedOutputStream bos = new BufferedOutputStream(fos);
-			
+
 			byte[] contents = new byte[1];
 			int bytesRead = 0;
 			long tam = (long) entrada.readLong();
 			int valor = 0;
 
 			System.out.println("tamanho: " + tam);
-	
+
 			while (tam > 0) {
 
 				if (tam >= 1) {
@@ -119,7 +120,7 @@ public class Cliente {
 
 			bos.close();
 			fos.close();
-			
+
 		} else {
 			System.out.println("Error 404 - Page not found!");
 
